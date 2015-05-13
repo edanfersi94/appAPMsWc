@@ -10,29 +10,29 @@
         Equipo SoftDev
 
     DESCRIPCION: 
-		
+        
 """
 #-------------------------------------------------------------------------------
 
 # Librerias a importar.
 
-from flask					import Flask
-from flask.ext.migrate		import Migrate, MigrateCommand
-from flask.ext.sqlalchemy  	import SQLAlchemy
-from flask.ext.script		import Manager
-from sqlalchemy 			import CheckConstraint
+from flask                    import Flask
+from flask.ext.migrate        import Migrate, MigrateCommand
+from flask.ext.sqlalchemy      import SQLAlchemy
+from flask.ext.script        import Manager
+from sqlalchemy             import CheckConstraint
 
 #-------------------------------------------------------------------------------
 
 # Construcción de la base de datos.
 
-SQLALCHEMY_DATABASE_URI = "postgresql://BMO:@localhost/newapmwsc"
-	# Estructura para realizar la conexión con la base de datos:
-	# "postgresql://yourusername:yourpassword@localhost/yournewdb"
+SQLALCHEMY_DATABASE_URI = "postgresql://postgres:1234@localhost/appapmswc"
+    # Estructura para realizar la conexión con la base de datos:
+    # "postgresql://yourusername:yourpassword@localhost/yournewdb"
 
-db_dir = 'postgresql+psycopg2://BMO:@localhost/newapmwsc'
+db_dir = 'postgresql+psycopg2://postgres:1234@localhost/appapmswc'
 # Estructrua:
-# 'postgresql+psycopg2://user:password@localhost/the_database' 	
+# 'postgresql+psycopg2://user:password@localhost/the_database'     
 
 # Instancia de la aplicación a utilizar.
 app = Flask(__name__)
@@ -53,22 +53,22 @@ manager.add_command('db', MigrateCommand)
 
 # Tabla Acciones.
 class Acciones(db.Model):
-	__tablename__ = 'acciones'
-	idacciones 		= db.Column(db.Integer, primary_key = True)
-	descripAcciones = db.Column(db.String(50), nullable = False)
-	#pilas = relationship('Pila', backref = 'acciones', cascade="all, delete, delete-orphan")
+    __tablename__ = 'acciones'
+    idacciones         = db.Column(db.Integer, primary_key = True)
+    descripAcciones = db.Column(db.String(50), nullable = False)
+    #pilas = relationship('Pila', backref = 'acciones', cascade="all, delete, delete-orphan")
 
-	def __init__(self, idacciones, descripAcciones):
-		# Constructor del modelo Acciones.
-		self.idacciones 	 = idacciones
-		self.descripAcciones = descripAcciones
-		
+    def __init__(self, idacciones, descripAcciones):
+        # Constructor del modelo Acciones.
+        self.idacciones      = idacciones
+        self.descripAcciones = descripAcciones
+        
 
 #-------------------------------------------------------------------------------
 def createDatabase():
-	db.create_all()
+    db.create_all()
 
 if __name__ == '__main__':
-	# Se crean las tablas de la base de datos.
-	createDatabase()
-	manager.run()
+    # Se crean las tablas de la base de datos.
+    createDatabase()
+    manager.run()

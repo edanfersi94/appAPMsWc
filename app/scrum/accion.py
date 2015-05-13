@@ -42,13 +42,23 @@ def ACrearAccion(self,idacciones,descripAcciones):
 
 
 @accion.route('/accion/AModifAccion', methods=['POST'])
-def AModifAccion():
+def AModifAccion(self,idacciones,descriAcciones):
     #POST/PUT parameters
     params = request.get_json()
     results = [{'label':'/VProducto', 'msg':['Acción actualizada']}, {'label':'/VAccion', 'msg':['Error al modificar acción']}, ]
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
-
+    if descriAcciones == None:
+        return False
+    else:
+        newAcciones = Acciones(idacciones = idacciones, descripAcciones = descripAcciones)
+        if (type(idacciones)!= int or idacciones== None or len(descriAcciones)<= minIdAccion or descriAcciones == '' or len(descriAcciones) > maxDescripAcciones  ):
+            return False
+        else:
+            accionesmod = Acciones.query.filter_by(idacciones=idacciones).all()
+            accionesmod.descriAcciones = descriAcciones
+            db.session.commit()
+            return True
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
 
@@ -92,6 +102,15 @@ def VCrearAccion():
 
 
 #Use case code starts here
+#newIdAccion = 3
+#newDescripAcciones = 'accionesprobando3'
+#newacciones = Acciones(newIdAccion, newDescripAcciones)
+#db.session.add(newacciones)
+#db.session.commit()
 
+#newIdAccion = 3
+#newDescripAcciones = 'accionesprobando65656'
+#self =''
+#bool = AModifAccion(self,newIdAccion, newDescripAcciones)
 
 #Use case code ends here

@@ -54,18 +54,19 @@ manager.add_command('db', MigrateCommand)
 
 # Tabla Usuario.
 class User(db.Model):
-	__tablename__ = 'user'
+	__tablename__ = 'usuario'
 	fullname = db.Column(db.String(50), nullable = False)
 	username = db.Column(db.String(16), primary_key = True)
 	password = db.Column(db.String(16), nullable = False)
 	email 	 = db.Column(db.String(30), unique = True)
+	#idActores = db.Column(db.Integer, db.ForeignKey('actores.idactores'))
 
-	
 	def __init__(self,fullname, username, password, email):
 		self.fullname = fullname
 		self.username = username
 		self.password = password
 		self.email = email
+		#self.idAcciones = idAcciones
 
 
 # Tabla Acciones.
@@ -73,6 +74,7 @@ class Acciones(db.Model):
 	__tablename__ = 'acciones'
 	idacciones 		= db.Column(db.Integer, primary_key = True)
 	descripAcciones = db.Column(db.String(50), nullable = False)
+	#usuarios 		= db.relationship('User', backref = 'acciones', cascade="all, delete, delete-orphan")
 	#pilas = relationship('Pila', backref = 'acciones', cascade="all, delete, delete-orphan")
 
 	def __init__(self, idacciones, descripAcciones):
@@ -81,9 +83,15 @@ class Acciones(db.Model):
 		self.descripAcciones = descripAcciones
 		
 
+#class Pila(db.Model):
+
+
+
 #-------------------------------------------------------------------------------
 def createDatabase():
+	db.drop_all()
 	db.create_all()
+
 
 if __name__ == '__main__':
 	# Se crean las tablas de la base de datos.

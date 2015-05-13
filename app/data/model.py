@@ -2,7 +2,7 @@
 
 # Configuracion de la base de datos a utilizar.
 
-import settings
+import app.data.settings
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import relationship, backref
@@ -22,7 +22,7 @@ class Objetivo(db):
     __tablename__ = 'dpt'
     idobjetivo = Column(Integer, primary_key = True)
     descripcionobjetivo = Column(String(50), unique = True)
-    users = relationship('User', backref = 'pila', cascade="all, delete, delete-orphan")
+    users = relationship('Pila', backref = 'pila', cascade="all, delete, delete-orphan")
 
     def __init__(self, idobjetivo, descripcionobjetivo):
         self.idobjetivo = idobjetivo
@@ -31,7 +31,7 @@ class Objetivo(db):
         
 
 # Se crea el motor que almacenara los datos en el directorio local.
-engine = create_engine(URL(**settings.DATABASE))    
+engine = create_engine(URL(**app.data.settings.DATABASE))    
 
 #Se eliminnan las tablas anteriormente definidas
 db.metadata.drop_all(engine)

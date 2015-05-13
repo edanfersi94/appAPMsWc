@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import request, session, Blueprint, json
-
+from app.data.model import Objetivo, db
 objetivo = Blueprint('objetivo', __name__)
 
 
@@ -11,7 +11,9 @@ def ACrearObjetivo():
     results = [{'label':'/VProducto', 'msg':['Objetivo creado']}, {'label':'/VCrearObjetivo', 'msg':['Error al crear objetivo']}, ]
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
-
+    oObjetivo=Objetivo()
+    oObjetivo.add()
+    
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
     
@@ -79,16 +81,18 @@ def VObjetivo():
 
 import os
 
-import model
+# PATH que permite utilizar al modulo "model.py"
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+
+
+#from sqlalchemy import create_engine
+#from sqlalchemy.orm import sessionmaker
 
 
 # Se realiza la conexion con la bases de datos para realizar cambios en ella.
 
-DBSession = sessionmaker(bind=model.engine)
-session = DBSession()
+#DBSession = sessionmaker(bind=model.engine)
+#session = DBSession()
 
 
 class clsObjetivo():
@@ -134,15 +138,3 @@ class clsObjetivo():
 
         return []
    
-   
-    def eliminar(self, idobjetivo):
-        
-        if not (self.buscar(idobjetivo)==[]):
-            session.query(model.Objetivo).filter(model.Objetivo.idobjetivo==idobjetivo).delete()
-            session.commit()
-            return True
-        
-        return False
-    
-
-#Use case code ends here

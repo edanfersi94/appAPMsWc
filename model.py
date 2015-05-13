@@ -51,6 +51,23 @@ manager.add_command('db', MigrateCommand)
 
 # Tablas de la base de datos a definir.
 
+
+# Tabla Usuario.
+class User(db.Model):
+	__tablename__ = 'user'
+	fullname = db.Column(db.String(50), nullable = False)
+	username = db.Column(db.String(16), primary_key = True)
+	password = db.Column(db.String(16), nullable = False)
+	email 	 = db.Column(db.String(30), unique = True)
+
+	
+	def __init__(self,fullname, username, password, email):
+		self.fullname = fullname
+		self.username = username
+		self.password = password
+		self.email = email
+
+
 # Tabla Acciones.
 class Acciones(db.Model):
 	__tablename__ = 'acciones'

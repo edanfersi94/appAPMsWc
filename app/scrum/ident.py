@@ -4,6 +4,7 @@ from app.scrum.user     import *
 
 ident = Blueprint('ident', __name__)
 
+#.------------------------------------------------------------------------------------------------.
 
 @ident.route('/ident/AIdentificar', methods=['POST'])
 def AIdentificar():
@@ -23,9 +24,11 @@ def AIdentificar():
         checkUsername = userInput.find_username(usuarioReq)
         
         if (checkUsername != []):
-            checkPassword = checkUsername.password            
+            print(str(checkUsername))
+            checkPassword = checkUsername[0].password            
             if (checkPassword == passwordReq):
-                userActor = checkUsername.idActor
+                #userActor = checkUsername.idActor
+                userActor = 3
 
                 # Puesto que los id de los actores comienzan desde el 1 entonces se resta una posicion.
                 # para obtener el correspondiente.
@@ -46,6 +49,7 @@ def AIdentificar():
     return json.dumps(res)
 
 
+#.------------------------------------------------------------------------------------------------.
 
 @ident.route('/ident/ARegistrar', methods=['POST'])
 def ARegistrar():
@@ -54,6 +58,32 @@ def ARegistrar():
     results = [{'label':'/VLogin', 'msg':['Felicitaciones, Ya estás registrado en la aplicación']}, {'label':'/VRegistro', 'msg':['Error al tratar de registrarse']}, ]
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
+
+    userInput = clsUser()
+    nombreReq   = params['nombre']
+    usuarioReq  = params['usuario']
+    claveReq    = params['clave']
+    clave2Req   = params['clave2']
+    correoReq   = params['correo']
+
+    checkUsername = userInput.find_username(usuarioReq)
+    checkCorreo   = userInput.find_email(usuarioReq)
+
+
+    # Falta acomodar el password
+    if (checkUsername == [] and checkCorreo == [] and claveReq == clave2Req):
+        print(len(usuarioReq))
+        # El actor es 1 porque sera un desarrollador.
+        # actorUsuario = 1
+        resultInsert = userInput.insert_user(nombreReq,usuarioReq,claveReq,correoReq)
+        print(resultInsert)
+        if (resultInsert):
+            res = results[0]
+        else:
+            res = results[1]
+
+    else:
+        res = results[1]
 
 
     #Action code ends here
@@ -64,6 +94,8 @@ def ARegistrar():
             session['actor'] = res['actor']
     return json.dumps(res)
 
+
+#.------------------------------------------------------------------------------------------------.
 
 
 @ident.route('/ident/VLogin')
@@ -78,6 +110,8 @@ def VLogin():
     return json.dumps(res)
 
 
+#.------------------------------------------------------------------------------------------------.
+
 
 @ident.route('/ident/VRegistro')
 def VRegistro():
@@ -85,7 +119,7 @@ def VRegistro():
     if "actor" in session:
         res['actor']=session['actor']
     #Action code goes here, res should be a JSON structure
-
+    
 
     #Action code ends here
     return json.dumps(res)
@@ -98,3 +132,5 @@ def VRegistro():
 
 
 #Use case code ends here
+
+#.------------------------------------------------------------------------------------------------.

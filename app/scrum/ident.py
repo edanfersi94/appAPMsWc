@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from flask import request, session, Blueprint, json
+from flask              import request, session, Blueprint, json
+from app.scrum.user     import *
 
 ident = Blueprint('ident', __name__)
 
@@ -12,6 +13,29 @@ def AIdentificar():
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
 
+    if request.method == 'POST':
+
+        userInput   = clsUser()
+        usuarioReq  = params['usuario']
+        passwordReq = params['clave']
+        lastResult  = len(results) - 1
+
+        checkUsername = userInput.find_username(usuarioReq)
+        
+        if (checkUsername != []):
+            checkPassword = checkUsername.password            
+            if (checkPassword == passwordReq):
+                userActor = checkUsername.idActor
+
+                # Puesto que los id de los actores comienzan desde el 1 entonces se resta una posicion.
+                # para obtener el correspondiente.
+                res = results[userActor - 1]
+
+            else:
+                res = results[lastResult]
+
+        else:
+            res = results[lastResult]
 
     #Action code ends here
     if "actor" in res:

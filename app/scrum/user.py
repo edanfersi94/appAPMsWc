@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
     UNIVERSIDAD SIMON BOLIVAR
     Departamento de Computacion y Tecnologia de la Informacion.
@@ -25,7 +26,7 @@ from model import *
 
 class clsUser():
 
-    def insert_user(self, newFullname, newUsername, newPassword, newEmail, newIddpt, newIdrole):
+    def insert_user(self, newFullname, newUsername, newPassword, newEmail):
         """
             @brief Funcion que permite insertar un nuevo usuario a la base de datos.
             
@@ -33,15 +34,33 @@ class clsUser():
             @param newUsername: Username del usuario a insertar.
             @param newPassword: Password del usuario a insertar.
             @param newEmail: Email del usuario a insertar.
-            @param newIdRole: Id del rol del usuario a insertar.
-            @param newIdDpt: Id del departamento del usuario a insertar.
-            
+
             @return True si se inserto el usuario dado. De lo contrario False.
         """	
-            
-        newUser = User(newFullname, newUsername, newPassword, newEmail, newIddpt, newIdrole)
-        db.session.add(newUser)
-        db.session.commit()
+         
+        # Verificación de tipo.
+        fullnameIsStr = type(newFullname) == str
+        usernameIsStr = type(newUsername) == str
+        emailIsStr    = type(newEmail) == str
+
+        if (fullnameIsStr and usernameIsStr and emailIsStr):
+            # Verificación los limites.
+            usernameLenValid = 1 <= len(newUsername) <= 16
+            fullnameLenValid = 1 <= len(newFullname) <= 50
+            passwordLenValid = 1 <= len(newPassword) <= 16
+            emailLenValid = 1 <= len(newFullname) <= 30
+
+            if (usernameLenValid and fullnameLenValid and passwordLenValid and emailLenValid):
+                query1 = self.find_username(newUsername)
+                query2 = self.find_email(newEmail)
+
+                if (query1 == [] and query2 == []):
+                    newUser = User(newFullname, newUsername, newPassword, newEmail)
+                    db.session.add(newUser)
+                    db.session.commit()
+                    return( True )
+
+        return( False )
 
     #-----------------------------------------------------------------------
     
@@ -136,80 +155,6 @@ class clsUser():
         return ([])
         
     #--------------------------------------------------------------------
-    
-    def find_listFullname(self):
-        """
-            @brief Funcion que devuelve los nombres de los diferentes 
-            usuarios que se encuentran almacenados en la base de 
-            datos.
-            
-            @param no admite parametros.
-            
-            @return lista con la consulta solicitada.
-        """
-     
-        result = db.session.query(User.fullname.label('name')).all()
-        return(result)
-
-    #--------------------------------------------------------------------
-    
-    def find_listUsername(self):
-        """
-        @brief Funcion que devuelve los usernames de los diferentes 
-            usuarios que se encuentran almacenados en la base de 
-            datos.
-            
-            @param no admite parametros.
-            
-            @return lista con la consulta solicitada.
-        """
-        result = db.session.query(User.username.label('user')).all()
-        return(result)
-
-    #--------------------------------------------------------------------
-       
-    def find_listEmail(self):
-        """
-            @brief Funcion que devuelve los emails de los diferentes 
-            usuarios que se encuentran almacenados en la base de 
-            datos.
-            
-            @param no admite parametros.
-            
-            @return lista con la consulta solicitada.
-        """
-        result = db.session.query(User.email.label('email')).all()
-        return(result)
-
-    #--------------------------------------------------------------------
-
-    def find_listIdDpt(self):
-        """
-            @brief Funcion que devuelve los id de los diferentes 
-            departamentos almacenados en la base de datos.
-            
-            @param no admite parametros.
-            
-            @return lista con la consulta solicitada.
-        """
-        result = db.session.query(User.iddpt.label('dpt')).all()
-        return(result)
-
-    #--------------------------------------------------------------------
-    
-    def find_listIdRole(self):
-        """
-            @brief Funcion que devuelve los id de los diferentes 
-            roles almacenados en la base de datos.
-            
-            @param no admite parametros.
-            
-            @return lista con la consulta solicitada.
-        """
-        result = db.session.query(User.idrole.label('role')).all()
-        return(result)
-
-    #--------------------------------------------------------------------
 
     def modify_fullname(self, username, newFullname):
         """
@@ -231,9 +176,9 @@ class clsUser():
             newFullnameLenValid = 1 <= len(newFullname) <= 50
 
             if ( usernameLenValid and newFullnameLenValid ):
-                query1 = self.find_username(username)
+                query = self.find_username(username)
                 
-                if (query1 != []) :	
+                if (query != []) :	
                     db.session.query(User).filter(User.username==username).\
                     update({'fullname':(newFullname)})
                     db.session.commit()
@@ -263,9 +208,9 @@ class clsUser():
             newUsernameLenValid = 1 <= len(newFullname) <= 16
             
             if ( usernameLenValid and newUsernameLenValid ):
-                query1 = self.find_username(username)
+                query = self.find_username(newUsername)
                 
-                if (query1 != []) :	
+                if (query != []) :	
                     db.session.query(User).filter(User.username==oldUsername).\
                     update({'username':(newUsername)})
                     db.session.commit()
@@ -295,9 +240,9 @@ class clsUser():
             newPasswordLenValid = 1 <= len(newPassword) <= 16
             
             if ( usernameLenValid and newPasswordLenValid ):
-                query1 = self.find_username(username)
+                query = self.find_username(username)
                 
-                if (query1 != []) :	
+                if (query != []) :	
                     db.session.query(User).filter(User.username==username).\
                     update({'password':(newPassword)})
                     db.session.commit()
@@ -327,9 +272,9 @@ class clsUser():
             newEmailLenValid = 1 <= len(newFullname) <= 30
             
             if ( usernameLenValid and newEmailLenValid ):
-                query1 = self.find_username(username)
+                query = self.find_email(newEmail)
                 
-                if (query1 != []) :	
+                if (query != []) :	
                     db.session.query(User).filter(User.username==username).\
                     update({'email':(newEmail)})
                     db.session.commit()
@@ -337,39 +282,7 @@ class clsUser():
 
         return( False )     
         
-    #--------------------------------------------------------------------                       
-    
-    def modify_idDpt(self, username, newIdDpt):
-        """
-			@brief Funcion que modifica el id del dpt de un usuario dado 
-                   por "newIdDpt".
-			
-			@param username	  : username del usuario a modificar.
-			@param newIdDpt   : nuevo id del dpt para el usuario.
-			
-			@return True si se modifico el rol dado. De lo contrario False.
-		"""
-		# Booleanos que indican si el tipo es el correcto.
-        usernameIsStr = type(username) == str
-        newIdDptIsInt = type(newFullname) == int        
-        
-        if ( usernameIsStr and  newFullnameIsStr ):
-            # Booleanos que indican si cumplen con los limites.
-            usernameLenValid = 1 <= len(username) <= 16
-            newIdDptIsPositive = newIdDpt > 0
-            
-            if ( usernameLenValid and newIdDptIsPositive ):
-                query1 = self.find_username(username)
-                query2 = self.find_idDpt(newIdDpt)
-                
-                if (query1 != [] and query2 != []) :	
-                    db.session.query(User).filter(User.username==username).\
-                    update({'iddpt':(newIdDpt)})
-                    db.session.commit()
-                    return( True )
 
-        return( False )                         
-        
     #--------------------------------------------------------------------    
     
     def modify_idRole(self, username, newIdRole):
@@ -393,7 +306,7 @@ class clsUser():
             
             if ( usernameLenValid and newIdRoleIsPositive ):
                 query1 = self.find_username(username)
-                query2 = self.find_idDpt(newIdRole)
+                query2 = self.find_idRole(newIdRole)
                 
                 if (query1 != [] and query2 != []) :	
                     db.session.query(User).filter(User.username==username).\
@@ -402,28 +315,5 @@ class clsUser():
                     return( True )
         
         return( False )                    
-
-    #--------------------------------------------------------------------
-
-    def delete_username(self, username):
-        """
-            @brief Funcion que elimina el usuario cuyo nombre de usuario 
-            sea "username".
-            
-            @param username: Identificador del usuario a eliminar.
-            
-            @return True si elimina el usuario dado. De lo contrario False.
-        """       
-        usernameIsString = type(username) == str
-        
-        if( usernameIsString ):
-            query = self.find_username( username ) 
-        
-        if ( query != []):
-            db.session.query(User).filter(User.username==username).delete()
-            db.session.commit()
-            return( True )
-        
-        return( False )
 
     #--------------------------------------------------------------------

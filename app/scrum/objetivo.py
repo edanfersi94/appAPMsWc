@@ -1,23 +1,42 @@
 # -*- coding: utf-8 -*-
 from flask import request, session, Blueprint, json
-from app.data.model import Objetivo, db
+from app.scrum.model import *
+
+
 objetivo = Blueprint('objetivo', __name__)
 
 
 @objetivo.route('/objetivo/ACrearObjetivo', methods=['POST'])
-def ACrearObjetivo():
+def ACrearObjetivo(self, idObjetivo, descripObjetivo):
     #POST/PUT parameters
     params = request.get_json()
     results = [{'label':'/VProducto', 'msg':['Objetivo creado']}, {'label':'/VCrearObjetivo', 'msg':['Error al crear objetivo']}, ]
     res = results[0]
-    #Action code goes here, res should be a list with a label and a message
-    #oObjetivo=Objetivo()
-    #oObjetivo.add()
+    
+     # -- Insertar Objetivo -- #
+    
+    if (descripObjetivo==None):
+        return False 
+
+    idObjetivoEsEntero = (type(idObjetivo) == int)
+    
+    if (idObjetivoEsEntero and idObjetivo >=0):
+        try: # Preguntamos si hay problemas con claves foraneas, claves primarias o dominios.
+            nuevoObjetivo=model.Objetivo(idObjetivo,descripObjetivo)
+            session.add(nuevoObjetivo)
+            session.commit()           
+            return True
+        except: 
+            return False
+    
+    return False
+     
     
     idPila = 1
-    res['label'] = res['label'] + '/' + str(idPila)
+    res['label'] = res['label'] + '/' + str(idPila) # falta agregar el id de la pila
     
     #Action code ends here
+    
     if "actor" in res:
         if res['actor'] is None:
             session.pop("actor", None)
@@ -28,12 +47,27 @@ def ACrearObjetivo():
 
 
 @objetivo.route('/objetivo/AModifObjetivo', methods=['POST'])
-def AModifObjetivo():
+def AModifObjetivo(self, idObjetivo, descripObjetivo):
     #POST/PUT parameters
     params = request.get_json()
     results = [{'label':'/VProducto', 'msg':['Objetivo actualizado']}, {'label':'/VObjetivo', 'msg':['Error al modificar objetivo']}, ]
     res = results[0]
+    
     #Action code goes here, res should be a list with a label and a message
+    
+    # -- Modificar Objetivo -- #
+    
+    if (descripObjetivo==None):
+        return False
+    
+    try: # Preguntamos si hay algun problema buscando el idObjetivo.        
+        session.query(model.Objetivo).filter(model.Objetivo.idObjetivo==idObjetivo).\
+        update({'descripObjetivo':(descripObjetivo)})
+        session.commit()
+        return True 
+    
+    except:
+       return False    
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
@@ -77,58 +111,4 @@ def VObjetivo():
 
 #Use case code starts here
 
-# Librerias a utilizar.
-
-import os
-
-# PATH que permite utilizar al modulo "model.py"
-
-
-
-#from sqlalchemy import create_engine
-#from sqlalchemy.orm import sessionmaker
-
-
-class clsObjetivo():
-    
-    
-    def insertar(self,idobjetivo,descripcionobjetivo):
-        
-        idobjetivoEsEntero = (type(idobjetivo) == int)
-        if (idobjetivotEsEntero and idobjetivo >=0):
-            if (self.buscar(idobjetivo) == []):
-                try: # Si hay problema, retornamos False.
-                    nuevoObjetivo=model.Objetivo(idobjetivo,idobjetivo)
-                    session.add(nuevoObjetivo)
-                    session.commit()           
-                    return True
-                except: 
-                    return False
-        
-        return False
-     
-    
-    def modificarDescripcion(self,idobjetivo,descripcionobjetivo):
-        
-        if (self.buscar(idobjetivo) == []):
-           return False
-       
-        try: # Si hay problema, retornamos False.
-            session.query(model.Objetivo).filter(model.Objetivo.idobjetivo==idobjetivo).\
-            update({'descripcionobjetivo':(descripcionobjetivo)})
-            session.commit()
-            return True 
-        except:
-            return False
-        
-                     
-    def buscar(self,idobjetivo):
-         
-        idobjetivoEsEntero = (type(idobjetivo) == int)
-        
-        if idobjetivoEsEntero:
-            busqueda= session.query(model.Objetivo).filter(model.Objetivo.idobjetivo==idobjetivo).all()
-            return busqueda
-
-        return []
-   
+#Use case code ends here

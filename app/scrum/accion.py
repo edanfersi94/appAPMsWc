@@ -3,15 +3,31 @@ from flask import request, session, Blueprint, json
 
 accion = Blueprint('accion', __name__)
 
+from model import *
+minIdAccion   = 0
+maxDescripAcciones = 50
 
 @accion.route('/accion/ACrearAccion', methods=['POST'])
-def ACrearAccion():
+def ACrearAccion(self,idacciones,descripAcciones):
     #POST/PUT parameters
     params = request.get_json()
     results = [{'label':'/VProducto', 'msg':['Acción creada']}, {'label':'/VCrearAccion', 'msg':['Error al crear acción']}, ]
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
-
+    id_accion = Acciones.query.filter_by(idacciones = idacciones).all()
+    newAcciones = Acciones(idacciones = idacciones, descripAcciones = descripAcciones)
+    if  type(idacciones) != int:
+        return False
+    if type(descripAcciones) != str:
+        return False
+    else:
+        long_descriAcciones =len(newAcciones.descriAcciones)
+        if (type(idacciones) == str or newAcciones.idacciones == None or newAccion.id_accion <= minIAccion or newAcciones.descriAcciones == '' or long_descriAcciones > maxDescripAcciones):
+                    return False
+        else:
+                    db.session.add(newAcciones)
+                    db.session.commit()
+                    return True
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
 
@@ -26,13 +42,23 @@ def ACrearAccion():
 
 
 @accion.route('/accion/AModifAccion', methods=['POST'])
-def AModifAccion():
+def AModifAccion(self,idacciones,descriAcciones):
     #POST/PUT parameters
     params = request.get_json()
     results = [{'label':'/VProducto', 'msg':['Acción actualizada']}, {'label':'/VAccion', 'msg':['Error al modificar acción']}, ]
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
-
+    if descriAcciones == None:
+        return False
+    else:
+        newAcciones = Acciones(idacciones = idacciones, descripAcciones = descripAcciones)
+        if (type(idacciones)!= int or idacciones== None or len(descriAcciones)<= minIdAccion or descriAcciones == '' or len(descriAcciones) > maxDescripAcciones  ):
+            return False
+        else:
+            accionesmod = Acciones.query.filter_by(idacciones=idacciones).all()
+            accionesmod.descriAcciones = descriAcciones
+            db.session.commit()
+            return True
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
 
@@ -71,11 +97,3 @@ def VCrearAccion():
     #Action code ends here
     return json.dumps(res)
 
-
-
-
-
-#Use case code starts here
-
-
-#Use case code ends here

@@ -69,8 +69,6 @@ def ARegistrar():
     checkUsername = userInput.find_username(usuarioReq)
     checkCorreo   = userInput.find_email(usuarioReq)
 
-
-    # Falta acomodar el password
     if (checkUsername == [] and checkCorreo == [] and claveReq == clave2Req):
         print(len(usuarioReq))
         # El actor es 1 porque sera un desarrollador.
@@ -85,8 +83,6 @@ def ARegistrar():
     else:
         res = results[1]
 
-
-    #Action code ends here
     if "actor" in res:
         if res['actor'] is None:
             session.pop("actor", None)
@@ -103,10 +99,7 @@ def VLogin():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
 
-
-    #Action code ends here
     return json.dumps(res)
 
 
@@ -118,19 +111,7 @@ def VRegistro():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
-    
 
-    #Action code ends here
     return json.dumps(res)
-
-
-
-
-
-#Use case code starts here
-
-
-#Use case code ends here
 
 #.------------------------------------------------------------------------------------------------.

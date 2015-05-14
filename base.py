@@ -5,10 +5,15 @@
     Departamento de Computacion y Tecnologia de la Informacion.
     CI-3715 - Ingenieria de Software I (CI-3715)
     Abril - Julio 2015
+<<<<<<< HEAD
 
     AUTORES:
         Equipo SoftDev
 
+=======
+    AUTORES:
+        Equipo SoftDev
+>>>>>>> refs/remotes/origin/ramaNeylin1
     DESCRIPCION: 
         
 """
@@ -84,6 +89,10 @@ manager.add_command('db', MigrateCommand)
 
 # Tablas de la base de datos a definir.
 
+num_acciones = 0
+num_actores = 0
+num_objetivos = 0
+
 # Tabla Pila (Productos):
 class Pila(db.Model):
     __tablename__   = 'pila'
@@ -126,8 +135,23 @@ class Acciones(db.Model):
 
     def __init__(self, idacciones, descripAcciones):
         # Constructor del modelo Acciones.
-        self.idacciones      = idacciones
+        num_acciones         = num_acciones + 1
+        self.idacciones      = num_acciones
         self.descripAcciones = descripAcciones
+
+
+# Tabla Actores.
+class Actores(db.Model):
+    __tablename__ = 'actores'
+    id_actores     = db.Column(db.Integer, primary_key = True)
+    nombre_actores = db.Column(db.String(50), nullable = False)
+    #pilas = relationship('Pila', backref = 'acciones', cascade="all, delete, delete-orphan")
+
+    def __init__(self, nombre_actores):
+        # Constructor del modelo Acciones.
+        num_actores          = num_actores + 1
+        self.id_actores      = num_actores
+        self.nombre_actores  = nombre_actores
         
 #-------------------------------------------------------------------------------
 
@@ -136,3 +160,4 @@ if __name__ == '__main__':
       SECRET_KEY = repr(SystemRandom().random())
     )
     manager.run()
+

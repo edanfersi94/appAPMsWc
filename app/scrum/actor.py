@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
+#from base import *
 from flask import request, session, Blueprint, json
 
 actor = Blueprint('actor', __name__)
 
 
 @actor.route('/actor/ACrearActor', methods=['POST'])
-def ACrearActor():
+def ACrearActor(self, nombre_actores):
     #POST/PUT parameters
     params = request.get_json()
     results = [{'label':'/VProducto', 'msg':['Actor creado']}, {'label':'/VCrearActor', 'msg':['Error al crear actor']}, ]
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
+
+    # -- Insertar actor -- #
+    actor = base.Actores(nombre_actores)
+    db.session.add(actor)
+    db.session.commit()
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
@@ -26,7 +32,7 @@ def ACrearActor():
 
 
 @actor.route('/actor/AModifActor', methods=['POST'])
-def AModifActor():
+def AModifActor(self, id_actores, nombre_nuevo):
     #POST/PUT parameters
     params = request.get_json()
     results = [{'label':'/VProducto', 'msg':['Actor actualizado']}, {'label':'/VActor', 'msg':['Error al modificar actor']}, ]
@@ -35,6 +41,15 @@ def AModifActor():
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
+
+    # -- Modificar Actor -- #
+    if (id_actores == None):
+        return False
+    else:
+        db.session.query(base.Actores).filter(base.Actores.id_actores == id_actores).update({'nombre_actores':(nombre_nuevo)})
+        db.session.commit()
+        return True
+
 
     #Action code ends here
     if "actor" in res:
@@ -76,6 +91,7 @@ def VCrearActor():
 
 
 #Use case code starts here
+
 
 
 #Use case code ends here

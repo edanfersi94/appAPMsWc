@@ -1,7 +1,29 @@
-from flask import Flask, request, session
-from flask.ext.script import Manager, Server
-from random import SystemRandom
-from datetime import timedelta
+# -*- coding: utf-8 -*-. 
+
+"""
+    UNIVERSIDAD SIMON BOLIVAR
+    Departamento de Computacion y Tecnologia de la Informacion.
+    CI-3715 - Ingenieria de Software I (CI-3715)
+    Abril - Julio 2015
+
+    AUTORES:
+        Equipo SoftDev
+
+    DESCRIPCION: 
+        
+"""
+#.-------------------------------------------------------------------------------.
+
+# Librerias a importar:
+
+from flask                  import Flask, request, session, Blueprint, json
+from flask.ext.migrate      import Migrate, MigrateCommand
+from flask.ext.sqlalchemy   import SQLAlchemy
+from flask.ext.script       import Manager, Server
+from sqlalchemy             import CheckConstraint
+from random                 import SystemRandom
+
+#.-------------------------------------------------------------------------------.
 
 app = Flask(__name__, static_url_path='')
 manager = Manager(app)
@@ -36,12 +58,78 @@ app.register_blueprint(objetivo)
 from app.scrum.accion import accion
 app.register_blueprint(accion)
 
+#-------------------------------------------------------------------------------
+# Construcción de la base de datos.
+
+SQLALCHEMY_DATABASE_URI = "postgresql://BMO:@localhost/newapmwsc"
+    # Estructura para realizar la conexión con la base de datos:
+    # "postgresql://yourusername:yourpassword@localhost/yournewdb"
+
+db_dir = 'postgresql+psycopg2://BMO:@localhost/newapmwsc'
+# Estructrua:
+# 'postgresql+psycopg2://user:password@localhost/the_database'  
+
+# Instancia de la aplicación a utilizar.
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = db_dir
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 
-#Application code starts here
+# Instancia de la base de datos a usar.
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
+
+# Tablas de la base de datos a definir.
+
+# Tabla Pila (Productos):
+class Pila(db.Model):
+    __tablename__   = 'pila'
+    idPila          = db.Column(db.Integer, primary_key = True)
+    nomProducto     = db.Column(db.String(30), nullable = True)
+    idActor         = db.Column(db.Integer, nullable = True)
+    nomActor        = db.Column(db.String(150), nullable = True)
+    idObjetivo      = db.Column(db.Integer, nullable = True)
+    descripObjetivo = db.Column(db.String(150), nullable = True)
+    idAccion        = db.Column(db.Integer, nullable = True)
+    descripAccion   = db.Column(db.String(150), nullable = True)
+
+    def __init__(self, idPila):
+        self.idPila = idPila
+
+# Tabla Usuario.
+class User(db.Model):
+    __tablename__ = 'usuario'
+    fullname = db.Column(db.String(50), nullable = False)
+    username = db.Column(db.String(16), primary_key = True)
+    password = db.Column(db.String(16), nullable = False)
+    email    = db.Column(db.String(30), unique = True)
+    #idActores = db.Column(db.Integer, db.ForeignKey('actores.idactores'))
+
+    def __init__(self,fullname, username, password, email):
+        self.fullname = fullname
+        self.username = username
+        self.password = password
+        self.email = email
+        #self.idAcciones = idAcciones
 
 
-#Application code ends here
+# Tabla Acciones.
+class Acciones(db.Model):
+    __tablename__ = 'acciones'
+    idacciones      = db.Column(db.Integer, primary_key = True)
+    descripAcciones = db.Column(db.String(50), nullable = False)
+    #usuarios       = db.relationship('User', backref = 'acciones', cascade="all, delete, delete-orphan")
+    #pilas = relationship('Pila', backref = 'acciones', cascade="all, delete, delete-orphan")
+
+    def __init__(self, idacciones, descripAcciones):
+        # Constructor del modelo Acciones.
+        self.idacciones      = idacciones
+        self.descripAcciones = descripAcciones
+        
+#-------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     app.config.update(

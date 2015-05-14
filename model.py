@@ -81,6 +81,20 @@ class Acciones(db.Model):
 		# Constructor del modelo Acciones.
 		self.idacciones 	 = idacciones
 		self.descripAcciones = descripAcciones
+
+
+# Tabla Actores.
+class Actores(db.Model):
+    __tablename__  = 'actores'
+    id_actores     = db.Column(db.Integer, primary_key = True)
+    nombre_actores = db.Column(db.String(50), nullable = False)
+    #pilas = relationship('Pila', backref = 'acciones', cascade="all, delete, delete-orphan")
+
+    def __init__(self, nombre_actores):
+        # Constructor del modelo Actores.
+        num_actores         = num_actores + 1
+        self.id_actores     = num_actores
+        self.nombre_actores = nombre_actores
 		
 
 #class Pila(db.Model):

@@ -97,20 +97,3 @@ def VCrearAccion():
     #Action code ends here
     return json.dumps(res)
 
-
-
-
-
-#Use case code starts here
-#newIdAccion = 3
-#newDescripAcciones = 'accionesprobando3'
-#newacciones = Acciones(newIdAccion, newDescripAcciones)
-#db.session.add(newacciones)
-#db.session.commit()
-
-#newIdAccion = 3
-#newDescripAcciones = 'accionesprobando65656'
-#self =''
-#bool = AModifAccion(self,newIdAccion, newDescripAcciones)
-
-#Use case code ends here

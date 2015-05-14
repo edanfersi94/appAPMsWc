@@ -7,31 +7,22 @@ objetivo = Blueprint('objetivo', __name__)
 
 
 @objetivo.route('/objetivo/ACrearObjetivo', methods=['POST'])
-def ACrearObjetivo(self, idObjetivo, descripObjetivo):
+def ACrearObjetivo(self,descripObjetivo):
     #POST/PUT parameters
     params = request.get_json()
     results = [{'label':'/VProducto', 'msg':['Objetivo creado']}, {'label':'/VCrearObjetivo', 'msg':['Error al crear objetivo']}, ]
     res = results[0]
     
      # -- Insertar Objetivo -- #
-    
-    if (descripObjetivo==None):
-        return False 
 
-    idObjetivoEsEntero = (type(idObjetivo) == int)
-    
-    if (idObjetivoEsEntero and idObjetivo >=0):
-        try: # Preguntamos si hay problemas con claves foraneas, claves primarias o dominios.
-            nuevoObjetivo=model.Objetivo(idObjetivo,descripObjetivo)
-            session.add(nuevoObjetivo)
-            session.commit()           
-            return True
-        except: 
-            return False
-    
-    return False
-     
-    
+    try: # Preguntamos si hay problemas con claves foraneas, claves primarias o dominios.
+        nuevoObjetivo=model.Objetivo(idObjetivo,descripObjetivo)
+        session.add(nuevoObjetivo)
+        session.commit()           
+        return True
+    except: 
+        return False
+       
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila) # falta agregar el id de la pila
     

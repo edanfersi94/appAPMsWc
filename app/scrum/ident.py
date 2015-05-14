@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask              import request, session, Blueprint, json
-from app.scrum.user     import *
+from app.scrum.user     import clsUser
 
 ident = Blueprint('ident', __name__)
 

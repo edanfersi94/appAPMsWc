@@ -85,6 +85,17 @@ class Acciones(db.Model):
 
 #class Pila(db.Model):
 
+# Tabla Objetivo
+class Objetivo(db.Model):
+    __tablename__ = 'objetivo'
+    idObjetivo    = db.Column(db.Integer, primary_key = True)
+    descripObjetivo = db.Column(db.String(50), nullable = False)
+    #pilas = relationship('Pila', backref = 'objetivo', cascade="all, delete, delete-orphan")
+
+    def __init__(self, idobjetivo, descripObjetivo):
+        # Constructor del modelo Acciones.
+        self.idObjetivo      = idObjetivo
+        self.descripObjetivo  = descripObjetivo
 
 
 #-------------------------------------------------------------------------------

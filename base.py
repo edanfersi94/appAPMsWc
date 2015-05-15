@@ -20,16 +20,42 @@ from flask.ext.sqlalchemy   import SQLAlchemy
 from flask.ext.script       import Manager, Server
 from sqlalchemy             import CheckConstraint
 from random                 import SystemRandom
+from datetime               import timedelta
 
 #.-------------------------------------------------------------------------------.
 
 app = Flask(__name__, static_url_path='')
+
+#-------------------------------------------------------------------------------
+# Construcción de la base de datos.
+
+SQLALCHEMY_DATABASE_URI = "postgresql://postgres:1234@localhost/neyare"
+    # Estructura para realizar la conexión con la base de datos:
+    # "postgresql://yourusername:yourpassword@localhost/yournewdb"
+
+db_dir = 'postgresql+psycopg2://postgres:1234@localhost/neyare'
+# Estructrua:
+# 'postgresql+psycopg2://user:password@localhost/the_database'  
+
+# Instancia de la aplicación a utilizar.
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = db_dir
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+
+
+# Instancia de la base de datos a usar.
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
 manager = Manager(app)
 manager.add_command("runserver", Server(
     use_debugger = True,
     use_reloader = True,
     host = '0.0.0.0')
 )
+
+manager.add_command('db', MigrateCommand)
+
 
 @app.before_request
 def make_session_permanent():
@@ -56,29 +82,8 @@ app.register_blueprint(objetivo)
 from app.scrum.accion import accion
 app.register_blueprint(accion)
 
-#-------------------------------------------------------------------------------
-# Construcción de la base de datos.
-
-SQLALCHEMY_DATABASE_URI = "postgresql://BMO:@localhost/newapmwsc"
-    # Estructura para realizar la conexión con la base de datos:
-    # "postgresql://yourusername:yourpassword@localhost/yournewdb"
-
-db_dir = 'postgresql+psycopg2://BMO:@localhost/newapmwsc'
-# Estructrua:
-# 'postgresql+psycopg2://user:password@localhost/the_database'  
-
-# Instancia de la aplicación a utilizar.
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = db_dir
-app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 
-# Instancia de la base de datos a usar.
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-
-manager = Manager(app)
-manager.add_command('db', MigrateCommand)
 
 # Tablas de la base de datos a definir.
 
@@ -128,6 +133,7 @@ class Acciones(db.Model):
 
     def __init__(self, idacciones, descripAcciones):
         # Constructor del modelo Acciones.
+        global num_acciones
         num_acciones         = num_acciones + 1
         self.idacciones      = num_acciones
         self.descripAcciones = descripAcciones
@@ -142,6 +148,7 @@ class Actores(db.Model):
 
     def __init__(self, nombre_actores):
         # Constructor del modelo Acciones.
+        global num_actores
         num_actores          = num_actores + 1
         self.id_actores      = num_actores
         self.nombre_actores  = nombre_actores

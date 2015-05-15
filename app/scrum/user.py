@@ -18,7 +18,7 @@
 
 # Librerias a utilizar.
 
-from base import db
+from model import *
 
 #-------------------------------------------------------------------------------
 

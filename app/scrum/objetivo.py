@@ -1,30 +1,31 @@
 # -*- coding: utf-8 -*-
 from flask import request, session, Blueprint, json
-from model import *
+import model
 
 
 objetivo = Blueprint('objetivo', __name__)
 
 
 @objetivo.route('/objetivo/ACrearObjetivo', methods=['POST'])
-def ACrearObjetivo(self,descripObjetivo):
+def ACrearObjetivo():
     #POST/PUT parameters
     params = request.get_json()
     results = [{'label':'/VProducto', 'msg':['Objetivo creado']}, {'label':'/VCrearObjetivo', 'msg':['Error al crear objetivo']}, ]
     res = results[0]
     
+    descripObjetivo = params['descripcion']
     descripObjetivoStr = type(descripObjetivo) == str
 
     if (descripObjetivoStr):
-    	descripObjetivoLenValido = 1<= len(descripObjetivo) <=500
+        descripObjetivoLenValido = 1<= len(descripObjetivo) <=500
 
-    	if(descripObjetivoLenValido):
+        if(descripObjetivoLenValido):
 
-        	nuevoObjetivo=model.Objetivo(descripObjetivo)
-        	session.add(nuevoObjetivo)
-        	session.commit() 
+            nuevoObjetivo = model.Objetivo(descripObjetivo)
+            model.db.session.add(nuevoObjetivo)
+            model.db.session.commit() 
         else:
-        	res = results[1]       
+            res = results[1]       
     else: 
         res = results[1]
        
@@ -43,7 +44,7 @@ def ACrearObjetivo(self,descripObjetivo):
 
 
 @objetivo.route('/objetivo/AModifObjetivo', methods=['POST'])
-def AModifObjetivo(self, idObjetivo, descripObjetivo):
+def AModifObjetivo():
     #POST/PUT parameters
     params = request.get_json()
     results = [{'label':'/VProducto', 'msg':['Objetivo actualizado']}, {'label':'/VObjetivo', 'msg':['Error al modificar objetivo']}, ]
@@ -54,22 +55,22 @@ def AModifObjetivo(self, idObjetivo, descripObjetivo):
     # -- Modificar Objetivo -- #
     descripObjetivoStr = type(descripObjetivo) == str
     if (descripObjetivoStr):
-    	descripObjetivoLenValido = 1<= len(descripObjetivo) <=500
+        descripObjetivoLenValido = 1<= len(descripObjetivo) <=500
 
-    	if(descripObjetivoLenValido):
-    		query = session.query(model.Objetivo).filter(model.Objetivo.idObjetivo==idObjetivo).all()
+        if(descripObjetivoLenValido):
+            query = session.query(model.Objetivo).filter(model.Objetivo.idObjetivo==idObjetivo).all()
 
-    		if (query != []) :	
-    		 	db.session.query(User).filter(User.idObjetivo==idObjetivo)
-                update({'fullname':(newFullname)})
+            if (query != []) :  
+                db.session.query(Objetivo).filter(Objetivo.idObjetivo==idObjetivo)
+                update({'descripObjetivo':(descripObjetivo)})
                 db.session.commit()
                 res = results[0]
 
             else:
-            	res = results[1]
+                res = results[1]
 
         else:
-        	res = results[1]  
+            res = results[1]  
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
@@ -103,12 +104,15 @@ def VObjetivo():
     if "actor" in session:
         res['actor']=session['actor']
     #Action code goes here, res should be a JSON structure
-
+    idObjetivo = int(request.args['idObjetivo'])
+    obj = Objetivo.query.filter_by(idObjetivo = idObjetivo).first()
+    res['objetivo'] = [{'idObjetivo':obj.idObjetivo, 'descripObjetivo':obj.descripObjetivo}
+                    for obj in obj.DescripObjetivos]
+    res['fObjetivo'] = {'idObjetivo':idObjetivo, 'descripObjetivo':'Descripciones'}
     res['idPila'] = 1 
 
     #Action code ends here
     return json.dumps(res)
-
 
 
 #Use case code starts here

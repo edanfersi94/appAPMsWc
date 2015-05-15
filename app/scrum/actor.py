@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import request, session, Blueprint, json
+import model
+
 
 actor = Blueprint('actor', __name__)
 
@@ -11,6 +13,31 @@ def ACrearActor():
     results = [{'label':'/VProducto', 'msg':['Actor creado']}, {'label':'/VCrearActor', 'msg':['Error al crear actor']}, ]
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
+
+    nombre_actores = params['nombre']
+
+    # -- Insertar actor -- #
+    # Booleanos que indican si el tipo es el correcto.
+    nombreIsStr = type(nombre_actores) == str
+
+    if (nombreIsStr):
+        # Booleanos que indican si cumplen con los limites.
+        nombreLenValid = 1 <= len(nombre_actores) <= 50
+    
+        if (nombreLenValid):
+
+            query = model.db.session.query(model.Actores).filter(model.Actores.nombre_actores == nombre_actores).all()
+            print(str(query))
+            if (query == []):   
+                actor = model.Actores(nombre_actores)
+                model.db.session.add(actor)
+                model.db.session.commit()
+            else:
+                res = results[1]
+        else:
+            res = results[1]
+    else:
+        res = results[1]
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
@@ -25,6 +52,7 @@ def ACrearActor():
 
 
 
+
 @actor.route('/actor/AModifActor', methods=['POST'])
 def AModifActor():
     #POST/PUT parameters
@@ -35,6 +63,16 @@ def AModifActor():
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
+
+    # -- Modificar Actor -- #
+    #if (id_actores == None):
+    #    res = results[1]
+    #else:
+    nombre_nuevo = params['nombre']
+    model.db.session.query(model.Actores).filter(model.Actores.id_actores == idPila).update({'nombre_actores':(nombre_nuevo)})
+    model.db.session.commit()
+    res = results[0]
+
 
     #Action code ends here
     if "actor" in res:
@@ -55,9 +93,13 @@ def VActor():
 
     res['idPila'] = 1 
 
+
+    id_actores = int(request.args['id_actores'])
+    query = model.db.session.query(model.Actores).filter_by(id_actores = id_actores).first()
+    res['actor'] =  {'id_actores':query.id_actores, 'nombre_actores':query.nombre_actores}
+
     #Action code ends here
     return json.dumps(res)
-
 
 
 @actor.route('/actor/VCrearActor')

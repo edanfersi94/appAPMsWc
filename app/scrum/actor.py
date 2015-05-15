@@ -4,8 +4,6 @@ from flask import request, session, Blueprint, json
 
 actor = Blueprint('actor', __name__)
 
-print("inicial")
-
 @actor.route('/actor/ACrearActor', methods=['POST'])
 def ACrearActor(self, nombre_actores):
     #POST/PUT parameters
@@ -88,32 +86,13 @@ def VActor():
 
     res['idPila'] = 1 
 
-    #Action code ends here
-    return json.dumps(res)
-
-'''@art.route('/art/VArticulos')
-def VArticulos():
-    res = {}
-    if "actor" in session:
-        res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
-
-    articulos = Articulo.query.all()
-    if len(articulos)==0:
-      art1 = Articulo('El pasado', 'Ya se fué, ya no importa.', 'Leo')
-      art2 = Articulo('El presente', '¿Ya fue, es ahora o será pronto?', 'Leo')
-      db.session.add(art1)
-      db.session.add(art2)
-      db.session.commit()
-      articulos = Articulo.query.all()
-    res['data0'] = [
-      {'idArticulo':art.idArticulo, 'titulo':art.titulo, 'autor':art.autor}
-      for art in articulos]
-  
+    id_actores = int(request.args['id_actores'])
+    query = model.db.session.query(model.Actores).filter_by(id_actores = id_actores).first()
+    res['actor'] =  {'id_actores':query.id_actores, 'nombre_actores':query.nombre_actores}
 
     #Action code ends here
     return json.dumps(res)
-'''
+
 
 
 @actor.route('/actor/VCrearActor')

@@ -13,15 +13,20 @@ def ACrearObjetivo(self,descripObjetivo):
     results = [{'label':'/VProducto', 'msg':['Objetivo creado']}, {'label':'/VCrearObjetivo', 'msg':['Error al crear objetivo']}, ]
     res = results[0]
     
-     # -- Insertar Objetivo -- #
+    descripObjetivoStr = type(descripObjetivo) == str
 
-    try: # Preguntamos si hay problemas con claves foraneas, claves primarias o dominios.
-        nuevoObjetivo=model.Objetivo(idObjetivo,descripObjetivo)
-        session.add(nuevoObjetivo)
-        session.commit()           
-        return True
-    except: 
-        return False
+    if (descripObjetivoStr):
+    	descripObjetivoLenValido = 1<= len(descripObjetivo) <=500
+
+    	if(descripObjetivoLenValido):
+
+        	nuevoObjetivo=model.Objetivo(descripObjetivo)
+        	session.add(nuevoObjetivo)
+        	session.commit() 
+        else:
+        	res = results[1]       
+    else: 
+        res = results[1]
        
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila) # falta agregar el id de la pila
@@ -47,18 +52,24 @@ def AModifObjetivo(self, idObjetivo, descripObjetivo):
     #Action code goes here, res should be a list with a label and a message
     
     # -- Modificar Objetivo -- #
-    
-    if (descripObjetivo==None):
-        return False
-    
-    try: # Preguntamos si hay algun problema buscando el idObjetivo.        
-        session.query(model.Objetivo).filter(model.Objetivo.idObjetivo==idObjetivo).\
-        update({'descripObjetivo':(descripObjetivo)})
-        session.commit()
-        return True 
-    
-    except:
-       return False    
+    descripObjetivoStr = type(descripObjetivo) == str
+    if (descripObjetivoStr):
+    	descripObjetivoLenValido = 1<= len(descripObjetivo) <=500
+
+    	if(descripObjetivoLenValido):
+    		query = session.query(model.Objetivo).filter(model.Objetivo.idObjetivo==idObjetivo).all()
+
+    		if (query != []) :	
+    		 	db.session.query(User).filter(User.idObjetivo==idObjetivo)
+                update({'fullname':(newFullname)})
+                db.session.commit()
+                res = results[0]
+
+            else:
+            	res = results[1]
+
+        else:
+        	res = results[1]  
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)

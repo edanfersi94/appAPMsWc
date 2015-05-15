@@ -49,6 +49,8 @@ manager.add_command('db', MigrateCommand)
 
 #-------------------------------------------------------------------------------
 
+num_objetivos = 0
+
 # Tablas de la base de datos a definir.
 
 
@@ -89,12 +91,14 @@ class Acciones(db.Model):
 class Objetivo(db.Model):
     __tablename__ = 'objetivo'
     idObjetivo    = db.Column(db.Integer, primary_key = True)
-    descripObjetivo = db.Column(db.String(50), nullable = False)
+    descripObjetivo = db.Column(db.String(500), nullable = False)
     #pilas = relationship('Pila', backref = 'objetivo', cascade="all, delete, delete-orphan")
 
-    def __init__(self, idobjetivo, descripObjetivo):
+    def __init__(self, descripObjetivo):
         # Constructor del modelo Acciones.
-        self.idObjetivo      = idObjetivo
+        global num_objetivos
+        num_objetivos 		  = num_objetivos + 1
+        self.idObjetivo       = num_objetivos
         self.descripObjetivo  = descripObjetivo
 
 

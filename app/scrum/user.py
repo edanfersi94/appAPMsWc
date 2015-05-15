@@ -17,7 +17,9 @@
 #------------------------------------------------------------------------------------
 
 # Librerias a utilizar.
-from model import *
+
+from base import db
+
 #-------------------------------------------------------------------------------
 
 # Se realiza la conexion con la bases de datos para realizar cambios en ella.

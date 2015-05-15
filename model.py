@@ -49,41 +49,44 @@ manager.add_command('db', MigrateCommand)
 
 #-------------------------------------------------------------------------------
 
+num_acciones  = 0
 num_objetivos = 0
+num_actores   = 0
+
+#-------------------------------------------------------------------------------
 
 # Tablas de la base de datos a definir.
 
 
 # Tabla Usuario.
 class User(db.Model):
-	__tablename__ = 'usuario'
-	fullname = db.Column(db.String(50), nullable = False)
-	username = db.Column(db.String(16), primary_key = True)
-	password = db.Column(db.String(16), nullable = False)
-	email 	 = db.Column(db.String(30), unique = True)
-	#idActores = db.Column(db.Integer, db.ForeignKey('actores.idactores'))
+    __tablename__ = 'usuario'
+    fullname = db.Column(db.String(50), nullable = False)
+    username = db.Column(db.String(16), primary_key = True)
+    password = db.Column(db.String(16), nullable = False)
+    email      = db.Column(db.String(30), unique = True)
+    #idActores = db.Column(db.Integer, db.ForeignKey('actores.idactores'))
 
-	def __init__(self,fullname, username, password, email):
-		self.fullname = fullname
-		self.username = username
-		self.password = password
-		self.email = email
-		#self.idAcciones = idAcciones
+    def __init__(self,fullname, username, password, email):
+        self.fullname = fullname
+        self.username = username
+        self.password = password
+        self.email = email
+        #self.idAcciones = idAcciones
 
 
 # Tabla Acciones.
 class Acciones(db.Model):
-	__tablename__ = 'acciones'
-	idacciones 		= db.Column(db.Integer, primary_key = True)
-	descripAcciones = db.Column(db.String(50), nullable = False)
-	#usuarios 		= db.relationship('User', backref = 'acciones', cascade="all, delete, delete-orphan")
-	#pilas = relationship('Pila', backref = 'acciones', cascade="all, delete, delete-orphan")
-
-	def __init__(self, idacciones, descripAcciones):
-		# Constructor del modelo Acciones.
-		self.idacciones 	 = idacciones
-		self.descripAcciones = descripAcciones
-		
+    __tablename__ = 'acciones'
+    idacciones         = db.Column(db.Integer, primary_key = True)
+    descripAcciones = db.Column(db.String(50), nullable = False)
+    
+    def __init__(self,descripAcciones):
+        global num_acciones
+        num_acciones         = num_acciones + 1
+        self.idacciones      = num_acciones
+        self.descripAcciones = descripAcciones
+        
 
 #class Pila(db.Model):
 
@@ -97,9 +100,23 @@ class Objetivo(db.Model):
     def __init__(self, descripObjetivo):
         # Constructor del modelo Acciones.
         global num_objetivos
-        num_objetivos 		  = num_objetivos + 1
+        num_objetivos         = num_objetivos + 1
         self.idObjetivo       = num_objetivos
         self.descripObjetivo  = descripObjetivo
+
+# Tabla Actores.
+class Actores(db.Model):
+    __tablename__  = 'actores'
+    id_actores     = db.Column(db.Integer, primary_key = True)
+    nombre_actores = db.Column(db.String(50), nullable = False)
+    #pilas = relationship('Pila', backref = 'acciones', cascade="all, delete, delete-orphan")
+
+    def __init__(self, nombre_actores):
+        # Constructor del modelo Actores.
+        global num_actores
+        num_actores         = num_actores + 1
+        self.id_actores     = num_actores
+        self.nombre_actores = nombre_actores
 
 
 #-------------------------------------------------------------------------------

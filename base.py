@@ -5,10 +5,8 @@
     Departamento de Computacion y Tecnologia de la Informacion.
     CI-3715 - Ingenieria de Software I (CI-3715)
     Abril - Julio 2015
-
     AUTORES:
         Equipo SoftDev
-
     DESCRIPCION: 
         
 """
@@ -178,4 +176,3 @@ if __name__ == '__main__':
       SECRET_KEY = repr(SystemRandom().random())
     )
     manager.run()
-

@@ -109,23 +109,23 @@ class Actores(db.Model):
     __tablename__  = 'actores'
     id_actores     = db.Column(db.Integer, primary_key = True)
     nombre_actores = db.Column(db.String(50), nullable = False)
-    #pilas = relationship('Pila', backref = 'acciones', cascade="all, delete, delete-orphan")
+    descripcion_actores = db.Column(db.String(500), nullable = True)
 
-    def __init__(self, nombre_actores):
+    def __init__(self, id_actores, nombre_actores, descripcion_actores):
         # Constructor del modelo Actores.
-        global num_actores
-        num_actores         = num_actores + 1
-        self.id_actores     = num_actores
-        self.nombre_actores = nombre_actores
-
+        self.id_actores     	 = id_actores
+        self.nombre_actores 	 = nombre_actores
+        self.descripcion_actores = descripcion_actores
 
 #-------------------------------------------------------------------------------
+
 def createDatabase():
 	db.drop_all()
 	db.create_all()
-
 
 if __name__ == '__main__':
 	# Se crean las tablas de la base de datos.
 	createDatabase()
 	manager.run()
+
+#-------------------------------------------------------------------------------

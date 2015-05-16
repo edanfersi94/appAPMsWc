@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+
+# Librerias a importar.
 from flask import request, session, Blueprint, json
-import model
+from app.scrum.funcObjetivo import clsObjetivo
+
+pag_actual = 0
 
 
 objetivo = Blueprint('objetivo', __name__)
@@ -14,20 +18,16 @@ def ACrearObjetivo():
     res = results[0]
     
     descripObjetivo = params['descripcion']
-    descripObjetivoStr = type(descripObjetivo) == str
+    
+    nuevoObjetivo   = clsObjetivo()
+    resultInsert = nuevoObjetivo.insert_Objetivo(nombre_objetivos, nueva_descripcion_objetivos)
 
-    if (descripObjetivoStr):
-        descripObjetivoLenValido = 1<= len(descripObjetivo) <=500
-
-        if(descripObjetivoLenValido):
-
-            nuevoObjetivo = model.Objetivo(descripObjetivo)
-            model.db.session.add(nuevoObjetivo)
-            model.db.session.commit() 
-        else:
-            res = results[1]       
-    else: 
+    if ( resultInsert ):
+        res = results[0]
+    else:
         res = results[1]
+
+    
        
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila) # falta agregar el id de la pila
@@ -51,29 +51,22 @@ def AModifObjetivo():
     res = results[0]
     
     #Action code goes here, res should be a list with a label and a message
-    
-    # -- Modificar Objetivo -- #
-    descripObjetivoStr = type(descripObjetivo) == str
-    if (descripObjetivoStr):
-        descripObjetivoLenValido = 1<= len(descripObjetivo) <=500
-
-        if(descripObjetivoLenValido):
-            query = session.query(model.Objetivo).filter(model.Objetivo.idObjetivo==idObjetivo).all()
-
-            if (query != []) :  
-                db.session.query(Objetivo).filter(Objetivo.idObjetivo==idObjetivo)
-                update({'descripObjetivo':(descripObjetivo)})
-                db.session.commit()
-                res = results[0]
-
-            else:
-                res = results[1]
-
-        else:
-            res = results[1]  
+     
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
+    
+    id_Objetivo = idPila
+    nueva_descripcion_Objetivos = params['descripcion']
+    
+    objModif = clsObjetivo()
+    
+    resultsModif = objModif.modify_Objetivo(id_Objetivo, nueva_descripcion_Objetivos)
+
+    if ( resultsModif ):
+        res = results[0]
+    else:
+        res = results[1]
 
     #Action code ends here
     if "actor" in res:
@@ -103,13 +96,15 @@ def VObjetivo():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
+        
+    res['idPila'] = 1
     #Action code goes here, res should be a JSON structure
-    idObjetivo = int(request.args['idObjetivo'])
-    obj = Objetivo.query.filter_by(idObjetivo = idObjetivo).first()
-    res['objetivo'] = [{'idObjetivo':obj.idObjetivo, 'descripObjetivo':obj.descripObjetivo}
-                    for obj in obj.DescripObjetivos]
-    res['fObjetivo'] = {'idObjetivo':idObjetivo, 'descripObjetivo':'Descripciones'}
-    res['idPila'] = 1 
+    global pag_actual
+    id_objetivos = int(request.args['id_objetivos'])
+    pag_actual = id_objetivos
+    query = model.db.session.query(model.Objetivo).filter_by(id_objetivos = id_objetivos).first()
+    res['objetivo'] =  {'id_objetivos':query.id_objetivos, 'nueva_descripcion_Objetivos':query.nueva_descripciones_Objetivos}
+    
 
     #Action code ends here
     return json.dumps(res)

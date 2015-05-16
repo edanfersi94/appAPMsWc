@@ -45,9 +45,11 @@ def ACrearActor():
 def AModifActor():
     #POST/PUT parameters
     params = request.get_json()
+    print(params)
     results = [{'label':'/VProducto', 'msg':['Actor actualizado']}, {'label':'/VActor', 'msg':['Error al modificar actor']}, ]
     res = results[0]
 
+    print(str(request.url_rule))
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)

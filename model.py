@@ -26,11 +26,11 @@ from sqlalchemy 			import CheckConstraint
 
 # Construcción de la base de datos.
 
-SQLALCHEMY_DATABASE_URI = "postgresql://BMO:@localhost/newapmwsc"
+SQLALCHEMY_DATABASE_URI = "postgresql://postgres:Edward_21@localhost/prueba"
 	# Estructura para realizar la conexión con la base de datos:
 	# "postgresql://yourusername:yourpassword@localhost/yournewdb"
 
-db_dir = 'postgresql+psycopg2://BMO:@localhost/newapmwsc'
+db_dir = 'postgresql+psycopg2://postgres:Edward_21@localhost/prueba'
 # Estructrua:
 # 'postgresql+psycopg2://user:password@localhost/the_database' 	
 
@@ -81,10 +81,8 @@ class Acciones(db.Model):
     idacciones         = db.Column(db.Integer, primary_key = True)
     descripAcciones = db.Column(db.String(50), nullable = False)
     
-    def __init__(self,descripAcciones):
-        global num_acciones
-        num_acciones         = num_acciones + 1
-        self.idacciones      = num_acciones
+    def __init__(self,idAcciones, descripAcciones):
+        self.idacciones      = idAcciones
         self.descripAcciones = descripAcciones
         
 
@@ -97,11 +95,9 @@ class Objetivo(db.Model):
     descripObjetivo = db.Column(db.String(500), nullable = False)
     #pilas = relationship('Pila', backref = 'objetivo', cascade="all, delete, delete-orphan")
 
-    def __init__(self, descripObjetivo):
+    def __init__(self, idObjetivo, descripObjetivo):
         # Constructor del modelo Acciones.
-        global num_objetivos
-        num_objetivos         = num_objetivos + 1
-        self.idObjetivo       = num_objetivos
+        self.idObjetivo       = idObjetivo
         self.descripObjetivo  = descripObjetivo
 
 # Tabla Actores.
@@ -116,6 +112,20 @@ class Actores(db.Model):
         self.id_actores     	 = id_actores
         self.nombre_actores 	 = nombre_actores
         self.descripcion_actores = descripcion_actores
+
+
+class EstadoActual(db.Model):
+    __tablename__ = 'estados'
+    id_producto_actual = db.Column(db.Integer, primary_key = True)
+    id_actor_actual = db.Column(db.Integer, nullable = True)
+    id_accion_actual = db.Column(db.Integer, nullable = True)
+    id_objetivos_actual = db.Column(db.Integer, nullable = True)
+
+    def __init__(self, id_producto_actual, id_actor_actual = None, id_accion_actual = None, id_objetivos_actual = None):
+        self.id_producto_actual  = id_producto_actual
+        self.id_actor_actual     = id_actor_actual
+        self.id_accion_actual    = id_accion_actual
+        self.id_objetivos_actual = id_objetivos_actual
 
 #-------------------------------------------------------------------------------
 

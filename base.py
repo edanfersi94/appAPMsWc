@@ -28,11 +28,11 @@ app = Flask(__name__, static_url_path='')
 
 # Construcción de la base de datos.
 
-SQLALCHEMY_DATABASE_URI = "postgresql://BMO:@localhost/newapmwsc"
+SQLALCHEMY_DATABASE_URI = "postgresql://postgres:Edward_21@localhost/prueba"
     # Estructura para realizar la conexión con la base de datos:
     # "postgresql://yourusername:yourpassword@localhost/yournewdb"
 
-db_dir = 'postgresql+psycopg2://BMO:@localhost/newapmwsc'
+db_dir = 'postgresql+psycopg2://postgres:Edward_21@localhost/prueba'
 # Estructrua:
 # 'postgresql+psycopg2://user:password@localhost/the_database'  
 
@@ -164,11 +164,25 @@ class Objetivos(db.Model):
     id_objetivos   = db.Column(db.Integer, primary_key = True)
     descripObjetivos = db.Column(db.String(500), nullable = False)
     
-    def __init(self,descripObjetivos):
+    def __init__(self,descripObjetivos):
         num_objetivos          = num_objetivos + 1
         self.id_objetivos      = num_objetivos
         self.descripObjetivos  = descripObjetivos
-        
+
+
+class EstadoActual(db.Model):
+    __tablename__ = 'estados'
+    id_producto_actual = db.Column(db.Integer, primary_key = True)
+    id_actor_actual = db.Column(db.Integer, nullable = True)
+    id_accion_actual = db.Column(db.Integer, nullable = True)
+    id_objetivos_actual = db.Column(db.Integer, nullable = True)
+
+    def __init__(self, id_producto_actual, id_actor_actual = None, id_accion_actual = None, id_objetivos_actual = None):
+        self.id_producto_actual  = id_producto_actual
+        self.id_actor_actual     = id_actor_actual
+        self.id_accion_actual    = id_accion_actual
+        self.id_objetivos_actual = id_objetivos_actual
+    
 #-------------------------------------------------------------------------------
 
 if __name__ == '__main__':

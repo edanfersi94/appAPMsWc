@@ -11,10 +11,7 @@ def ACrearProducto():
     params = request.get_json()
     results = [{'label':'/VProductos', 'msg':['Producto creado']}, {'label':'/VCrearProducto', 'msg':['Error al crear producto']}, ]
     res = results[0]
-    #Action code goes here, res should be a list with a label and a message
 
-
-    #Action code ends here
     if "actor" in res:
         if res['actor'] is None:
             session.pop("actor", None)
@@ -30,10 +27,7 @@ def AModifProducto():
     params = request.get_json()
     results = [{'label':'/VProductos', 'msg':['Producto actualizado']}, ]
     res = results[0]
-    #Action code goes here, res should be a list with a label and a message
 
-
-    #Action code ends here
     if "actor" in res:
         if res['actor'] is None:
             session.pop("actor", None)
@@ -48,10 +42,6 @@ def VCrearProducto():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
-
-
-    #Action code ends here
     return json.dumps(res)
 
 
@@ -61,12 +51,18 @@ def VProducto():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
 
     actores = model.Actores.query.all()
     acciones = model.Acciones.query.all()
     objetivos = model.Objetivo.query.all()
     idPila = int(request.args.get('idPila', 1))
+
+    productosListados = model.EstadoActual.query.all()
+    if ( len(productosListados) == 0):
+        producto1 = model.EstadoActual(1)
+        model.db.session.add(producto1)
+        model.db.session.commit()
+
     pilas = [{'idPila':1, 'nombre':'Pagos en línea', 'descripcion':'Pagos usando tarjeta de débito'}, {'idPila':2, 'nombre':'Recomendaciones de playas', 'descripcion':'Red social para playeros consumados'}, {'idPila':3, 'nombre':'Tu taxi seguro', 'descripcion':'Toma un taxi privado de forma segura'}, ]
     res['fPila'] = pilas[idPila-1]
     res['data3'] = [
@@ -79,8 +75,6 @@ def VProducto():
         {'idObjetivo':obj.idObjetivo, 'descripcion':obj.descripObjetivo}
          for obj in objetivos]
     res['idPila'] = idPila    
-
-    #Action code ends here
     return json.dumps(res)
 
 
@@ -90,11 +84,9 @@ def VProductos():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
 
     res['data0'] = [{'idPila':1, 'nombre':'Pagos en línea'}, {'idPila':2, 'nombre':'Recomendaciones de playas'}, {'idPila':3, 'nombre':'Tu taxi seguro'}, ]
 
-    #Action code ends here
     return json.dumps(res)
 
 

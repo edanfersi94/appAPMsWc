@@ -77,31 +77,14 @@ class User(db.Model):
 
 # Tabla Acciones.
 class Acciones(db.Model):
-    
-	__tablename__ = 'acciones'
-	idacciones 		= db.Column(db.Integer, primary_key = True)
-	descripAcciones = db.Column(db.String(50), nullable = False)
-	#usuarios 		= db.relationship('User', backref = 'acciones', cascade="all, delete, delete-orphan")
-	#pilas = relationship('Pila', backref = 'acciones', cascade="all, delete, delete-orphan")
 
-	def __init__(self, idacciones, descripAcciones):
-		# Constructor del modelo Acciones.
-		self.idacciones 	 = idacciones
-		self.descripAcciones = descripAcciones
-
-
-# Tabla Actores.
-class Actores(db.Model):
-    
     __tablename__ = 'acciones'
-    idacciones         = db.Column(db.Integer, primary_key = True)
+    idacciones 		= db.Column(db.Integer, primary_key = True)
     descripAcciones = db.Column(db.String(50), nullable = False)
     
     def __init__(self,idAcciones, descripAcciones):
         self.idacciones      = idAcciones
         self.descripAcciones = descripAcciones
-        
-
 
 #class Pila(db.Model):
 
@@ -154,4 +137,6 @@ if __name__ == '__main__':
 	# Se crean las tablas de la base de datos.
 	createDatabase()
 	manager.run()
+
+#-------------------------------------------------------------------------------
 

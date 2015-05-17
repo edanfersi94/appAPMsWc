@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
-# Librerias a importar.
-
 from flask import request, session, Blueprint, json
 from app.scrum.funcActor import clsActor
 import model
@@ -18,8 +15,6 @@ def ACrearActor(self, nombre_actores):
     results = [{'label':'/VProducto', 'msg':['Actor creado']}, {'label':'/VCrearActor', 'msg':['Error al crear actor']}, ]
     res = results[0]
 
-
-
     nuevo_nombre_actores      = params['nombre']
     nueva_descripcion_actores = params['descripcion']
     
@@ -30,7 +25,6 @@ def ACrearActor(self, nombre_actores):
         res = results[0]
     else:
         res = results[1]
-
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
@@ -115,7 +109,6 @@ def VCrearActor():
     if "actor" in session:
         res['actor']=session['actor']
     return json.dumps(res)
-
 
 #.----------------------------------------------------------------------------------------.
 

@@ -80,7 +80,7 @@ class Acciones(db.Model):
 
     __tablename__ = 'acciones'
     idacciones 		= db.Column(db.Integer, primary_key = True)
-    descripAcciones = db.Column(db.String(50), nullable = False)
+    descripAcciones = db.Column(db.String(500), nullable = False)
     
     def __init__(self,idAcciones, descripAcciones):
         self.idacciones      = idAcciones

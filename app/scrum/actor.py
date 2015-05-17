@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Librerias a importar.
 from flask import request, session, Blueprint, json
 from app.scrum.funcActor import clsActor
 import model
@@ -112,3 +111,4 @@ def VCrearActor():
     return json.dumps(res)
 
 #.----------------------------------------------------------------------------------------.
+

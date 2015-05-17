@@ -109,7 +109,7 @@ class clsActor():
 			# Booleanos que indican si se cumplen los limites.
 			nameLenValid 	= 1 <= len(newNameActor) <= 50
 			idIsPositive 	= idActor > 0
-			descripLenValid = 1 <= len(newNameActor) <= 500
+			descripLenValid = 1 <= len(newDescripActor) <= 500
 			
 			if ( nameLenValid and idIsPositive and descripLenValid ):
 				query1 = self.find_idActor(idActor)

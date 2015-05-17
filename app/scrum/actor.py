@@ -3,9 +3,7 @@
 # Librerias a importar.
 from flask import request, session, Blueprint, json
 from app.scrum.funcActor import clsActor
-
-pag_actual = 0
-
+import model
 
 actor = Blueprint('actor', __name__)
 
@@ -22,7 +20,7 @@ def ACrearActor():
     nueva_descripcion_actores = params['descripcion']
     
     nuevoActor   = clsActor()
-    resultInsert = nuevoActor.insert_Actor(nombre_actores, nueva_descripcion_actores)
+    resultInsert = nuevoActor.insert_Actor(nuevo_nombre_actores, nueva_descripcion_actores)
 
     if ( resultInsert ):
         res = results[0]
@@ -45,18 +43,16 @@ def ACrearActor():
 def AModifActor():
     #POST/PUT parameters
     params = request.get_json()
-    print(params)
     results = [{'label':'/VProducto', 'msg':['Actor actualizado']}, {'label':'/VActor', 'msg':['Error al modificar actor']}, ]
     res = results[0]
-
-    print(str(request.url_rule))
 
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
 
-    print(pag_actual)
-
-    id_actor = idPila
+    productoActual = model.EstadoActual.id_producto_actual == idPila
+    query = model.db.session.query(model.EstadoActual).filter(productoActual).all()
+    
+    id_actor = query[0].id_actor_actual
     nuevo_nombre_actores = params['nombre']
     nueva_descripcion_actores = params['descripcion']
 
@@ -75,39 +71,34 @@ def AModifActor():
             session['actor'] = res['actor']
     return json.dumps(res)
 
-
+#.----------------------------------------------------------------------------------------.
 
 @actor.route('/actor/VActor')
 def VActor():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
 
     res['idPila'] = 1 
 
-    global pag_actual
-    id_actores = int(request.args['id_actores'])
-    pag_actual = id_actores
-    query = model.db.session.query(model.Actores).filter_by(id_actores = id_actores).first()
-    res['actor'] =  {'id_actores':query.id_actores, 'nombre_actores':query.nombre_actores}
+    pagActorActual= request.url
+    pagActorActual.split('=')
+    actorActual = int(pagActorActual[-1])
 
-    #Action code ends here
+    productoActual = model.EstadoActual.id_producto_actual == 1
+    model.db.session.query(model.EstadoActual).filter(productoActual).\
+        update({'id_actor_actual':actorActual})
+    model.db.session.commit()    
+
     return json.dumps(res)
 
+#.----------------------------------------------------------------------------------------.
 
 @actor.route('/actor/VCrearActor')
 def VCrearActor():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
-
-
-    #Action code ends here
     return json.dumps(res)
 
-
-
-#Use case code starts here
-
+#.----------------------------------------------------------------------------------------.

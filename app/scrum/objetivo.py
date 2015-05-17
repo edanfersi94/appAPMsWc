@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from flask import request, session, Blueprint, json
+from app.scrum.funcObjetivo import clsObjetivo
 import model
-
 
 objetivo = Blueprint('objetivo', __name__)
 
+#.----------------------------------------------------------------------------------------.
 
 @objetivo.route('/objetivo/ACrearObjetivo', methods=['POST'])
 def ACrearObjetivo():
@@ -13,27 +14,19 @@ def ACrearObjetivo():
     results = [{'label':'/VProducto', 'msg':['Objetivo creado']}, {'label':'/VCrearObjetivo', 'msg':['Error al crear objetivo']}, ]
     res = results[0]
     
-    descripObjetivo = params['descripcion']
-    descripObjetivoStr = type(descripObjetivo) == str
+    nueva_descripcion_objetivo = params['descripcion']
 
-    if (descripObjetivoStr):
-        descripObjetivoLenValido = 1<= len(descripObjetivo) <=500
+    nuevoObjetivo = clsObjetivo()
+    resultInset = nuevoObjetivo.insert_Objetivo( nueva_descripcion_objetivo)
 
-        if(descripObjetivoLenValido):
-
-            nuevoObjetivo = model.Objetivo(descripObjetivo)
-            model.db.session.add(nuevoObjetivo)
-            model.db.session.commit() 
-        else:
-            res = results[1]       
-    else: 
-        res = results[1]
+    if ( resultInset ):
+        res = results[0]
+    else:
+        res = results[1]    
        
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila) # falta agregar el id de la pila
-    
-    #Action code ends here
-    
+
     if "actor" in res:
         if res['actor'] is None:
             session.pop("actor", None)
@@ -41,7 +34,7 @@ def ACrearObjetivo():
             session['actor'] = res['actor']
     return json.dumps(res)
 
-
+#.----------------------------------------------------------------------------------------.
 
 @objetivo.route('/objetivo/AModifObjetivo', methods=['POST'])
 def AModifObjetivo():
@@ -50,32 +43,23 @@ def AModifObjetivo():
     results = [{'label':'/VProducto', 'msg':['Objetivo actualizado']}, {'label':'/VObjetivo', 'msg':['Error al modificar objetivo']}, ]
     res = results[0]
     
-    #Action code goes here, res should be a list with a label and a message
-    
-    # -- Modificar Objetivo -- #
-    descripObjetivoStr = type(descripObjetivo) == str
-    if (descripObjetivoStr):
-        descripObjetivoLenValido = 1<= len(descripObjetivo) <=500
-
-        if(descripObjetivoLenValido):
-            query = session.query(model.Objetivo).filter(model.Objetivo.idObjetivo==idObjetivo).all()
-
-            if (query != []) :  
-                db.session.query(Objetivo).filter(Objetivo.idObjetivo==idObjetivo)
-                update({'descripObjetivo':(descripObjetivo)})
-                db.session.commit()
-                res = results[0]
-
-            else:
-                res = results[1]
-
-        else:
-            res = results[1]  
-
     idPila = 1
     res['label'] = res['label'] + '/' + str(idPila)
 
-    #Action code ends here
+    productoActual = model.EstadoActual.id_producto_actual == idPila
+    query = model.db.session.query(model.EstadoActual).filter(productoActual).all()
+    
+    id_objetivo = query[0].id_objetivos_actual
+    nueva_descripcion_objetivo = params['descripcion']
+
+    objetivoModif = clsObjetivo()
+    resultsModif  = objetivoModif.modify_Objetivo(id_objetivo, nueva_descripcion_objetivo)
+
+    if ( resultsModif ):
+        res = results[0]
+    else:
+        res = results[1]
+
     if "actor" in res:
         if res['actor'] is None:
             session.pop("actor", None)
@@ -83,38 +67,34 @@ def AModifObjetivo():
             session['actor'] = res['actor']
     return json.dumps(res)
 
-
+#.----------------------------------------------------------------------------------------.
 
 @objetivo.route('/objetivo/VCrearObjetivo')
 def VCrearObjetivo():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
-
-
-    #Action code ends here
     return json.dumps(res)
 
-
+#.----------------------------------------------------------------------------------------.
 
 @objetivo.route('/objetivo/VObjetivo')
 def VObjetivo():
     res = {}
     if "actor" in session:
         res['actor']=session['actor']
-    #Action code goes here, res should be a JSON structure
-    idObjetivo = int(request.args['idObjetivo'])
-    obj = Objetivo.query.filter_by(idObjetivo = idObjetivo).first()
-    res['objetivo'] = [{'idObjetivo':obj.idObjetivo, 'descripObjetivo':obj.descripObjetivo}
-                    for obj in obj.DescripObjetivos]
-    res['fObjetivo'] = {'idObjetivo':idObjetivo, 'descripObjetivo':'Descripciones'}
+  
     res['idPila'] = 1 
 
-    #Action code ends here
+    pagActorActual= request.url
+    pagActorActual.split('=')
+    objetivoActual = int(pagActorActual[-1])
+
+    productoActual = model.EstadoActual.id_producto_actual == 1
+    model.db.session.query(model.EstadoActual).filter(productoActual).\
+        update({'id_objetivos_actual':objetivoActual})
+    model.db.session.commit()   
+
     return json.dumps(res)
 
-
-#Use case code starts here
-
-#Use case code ends here
+#.----------------------------------------------------------------------------------------.

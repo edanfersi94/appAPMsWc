@@ -28,11 +28,11 @@ app = Flask(__name__, static_url_path='')
 
 # Construcción de la base de datos.
 
-SQLALCHEMY_DATABASE_URI = "postgresql://postgres:Edward_21@localhost/prueba"
+SQLALCHEMY_DATABASE_URI = "postgresql://BMO:@localhost/newapmwsc"
     # Estructura para realizar la conexión con la base de datos:
     # "postgresql://yourusername:yourpassword@localhost/yournewdb"
 
-db_dir = 'postgresql+psycopg2://postgres:Edward_21@localhost/prueba'
+db_dir = 'postgresql+psycopg2://postgres:BMO:@localhost/newapmwsc'
 # Estructrua:
 # 'postgresql+psycopg2://user:password@localhost/the_database'  
 

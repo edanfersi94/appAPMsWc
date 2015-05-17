@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from flask import request, session, Blueprint, json
+from app.scrum.funcActor import clsActor
 import model
+
 
 prod = Blueprint('prod', __name__)
 
@@ -63,7 +65,15 @@ def VProducto():
         model.db.session.add(producto1)
         model.db.session.commit()
 
-    pilas = [{'idPila':1, 'nombre':'Pagos en línea', 'descripcion':'Pagos usando tarjeta de débito'}, {'idPila':2, 'nombre':'Recomendaciones de playas', 'descripcion':'Red social para playeros consumados'}, {'idPila':3, 'nombre':'Tu taxi seguro', 'descripcion':'Toma un taxi privado de forma segura'}, ]
+
+    actoresListados = model.Actores.query.all()
+    if ( len(actoresListados) == 0 ):
+        nuevoActor = clsActor()
+        nuevoActor.insert_Actor('Product Owner','Es el dueño del producto')
+        nuevoActor.insert_Actor('Scrum Master','Es el Maestro Scrum del producto')
+        nuevoActor.insert_Actor('Developer','Es el desarrollador del producto')
+    
+    pilas = [{'idPila':1, 'nombre':'Pagos en línea', 'descripcion':'Pagos usando tarjeta de débito'}]
     res['fPila'] = pilas[idPila-1]
     res['data3'] = [
         {'idActor':act.id_actores, 'descripcion':act.nombre_actores}
@@ -85,15 +95,6 @@ def VProductos():
     if "actor" in session:
         res['actor']=session['actor']
 
-    res['data0'] = [{'idPila':1, 'nombre':'Pagos en línea'}, {'idPila':2, 'nombre':'Recomendaciones de playas'}, {'idPila':3, 'nombre':'Tu taxi seguro'}, ]
+    res['data0'] = [{'idPila':1, 'nombre':'Pagos en línea'} ]
 
     return json.dumps(res)
-
-
-
-
-
-#Use case code starts here
-
-
-#Use case code ends here

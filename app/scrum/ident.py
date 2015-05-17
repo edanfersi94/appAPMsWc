@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from flask              import request, session, Blueprint, json
-from app.scrum.user     import clsUser
-
+from flask import request, session, Blueprint, json
+from app.scrum.user import clsUser
 ident = Blueprint('ident', __name__)
 
 #.------------------------------------------------------------------------------------------------.
@@ -32,7 +31,7 @@ def AIdentificar():
 
                 # Puesto que los id de los actores comienzan desde el 1 entonces se resta una posicion.
                 # para obtener el correspondiente.
-                res = results[userActor - 1]
+                res = results[1]
 
             else:
                 res = results[lastResult]

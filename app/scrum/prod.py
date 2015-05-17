@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from flask import request, session, Blueprint, json
-import model
 
 prod = Blueprint('prod', __name__)
 

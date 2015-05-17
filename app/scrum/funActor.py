@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Función a importar.
-import model
 
 # Numero de actores creados en la base de datos.
 num_actores   = 0

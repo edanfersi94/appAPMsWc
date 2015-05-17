@@ -2,7 +2,7 @@
 
 # Librerias a importar.
 from flask import request, session, Blueprint, json
-from app.scrum.funcActor import clsActor
+from app.scrum.funActor import clsActor
 
 pag_actual = 0
 

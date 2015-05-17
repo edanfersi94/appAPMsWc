@@ -14,15 +14,16 @@
 	
 """
 
-#------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------
 
-# Librerias a utilizar.
+import data.model
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-from model import *
-
-#-------------------------------------------------------------------------------
-
+model=data.model # por comodidad mas que todo
 # Se realiza la conexion con la bases de datos para realizar cambios en ella.
+DBSession = sessionmaker(bind=data.model.engine)
+session = DBSession()
 
 class clsUser():
 
@@ -55,9 +56,9 @@ class clsUser():
                 query2 = self.find_email(newEmail)
 
                 if (query1 == [] and query2 == []):
-                    newUser = User(newFullname, newUsername, newPassword, newEmail)
-                    db.session.add(newUser)
-                    db.session.commit()
+                    newUser = model.User(newFullname, newUsername, newPassword, newEmail)
+                    session.add(newUser)
+                    session.commit()
                     return( True )
 
         return( False )
@@ -76,7 +77,7 @@ class clsUser():
         
         fullnameIsStr = type(fullname) == str
         if (fullnameIsStr):
-            result = db.session.query(User).filter(User.fullname==fullname).all()
+            result = session.query(model.User).filter(model.User.fullname==fullname).all()
             return(result)
             
         return ([])
@@ -94,7 +95,7 @@ class clsUser():
         """        
         userIsStr = type(username) == str
         if(userIsStr):
-            result = db.session.query(User).filter(User.username==username).all()
+            result = session.query(model.User).filter(model.User.username==username).all()
             return(result)
             
         return([])
@@ -112,49 +113,12 @@ class clsUser():
         """
         emailIsStr = type(email) == str
         if(emailIsStr):
-            result = db.session.query(User).filter(User.email==email).all()
+            result = session.query(model.User).filter(model.User.email==email).all()
             return(result)
             
         return([])
         
     #--------------------------------------------------------------------   
-        
-    def find_idDpt(self, idDpt):
-        """
-            @brief Funcion que realiza la busqueda de los usuarios cuyo id del dpt sea
-                   "idDpt"
-            
-            @param idDpt: Id del departamento de los usuarios a buscar.
-            
-            @return lista con la consulta solicitada.
-        """        
-        idDptIsInt = type(idDpt) == int
-        if(idDptIsInt):
-            result = db.session.query(User).filter(User.iddpt==idDpt).all()
-            return(result)
-            
-        return([])
-        
-    #--------------------------------------------------------------------
-        
-    def find_idRole(self, idRole):
-        """
-            @brief Funcion que realiza la busqueda de los usuarios cuyo id del rol sea
-                   "idRol"
-            
-            @param idRol: Id del rol de los usuarios a buscar.
-            
-            @return lista con la consulta solicitada.
-        """     
-                   
-        idRoleIsInt = type(idRole) == int
-        if(idRoleIsInt):
-            result = db.session.query(User).filter(User.idrole==idRole).all()
-            return(result)
-            
-        return ([])
-        
-    #--------------------------------------------------------------------
 
     def modify_fullname(self, username, newFullname):
         """
@@ -179,9 +143,9 @@ class clsUser():
                 query = self.find_username(username)
                 
                 if (query != []) :	
-                    db.session.query(User).filter(User.username==username).\
-                    update({'fullname':(newFullname)})
-                    db.session.commit()
+                    session.query(model.User).filter(model.User.username==username).\
+                        update({'fullname':(newFullname)})
+                    session.commit()
                     return( True )
                     
         return( False )     
@@ -211,9 +175,9 @@ class clsUser():
                 query = self.find_username(newUsername)
                 
                 if (query != []) :	
-                    db.session.query(User).filter(User.username==oldUsername).\
-                    update({'username':(newUsername)})
-                    db.session.commit()
+                    session.query(model.User).filter(model.User.username==oldUsername).\
+                        update({'username':(newUsername)})
+                    session.commit()
                     return( True )
 
         return( False )      
@@ -243,9 +207,9 @@ class clsUser():
                 query = self.find_username(username)
                 
                 if (query != []) :	
-                    db.session.query(User).filter(User.username==username).\
-                    update({'password':(newPassword)})
-                    db.session.commit()
+                    session.query(model.User).filter(model.User.username==username).\
+                        update({'password':(newPassword)})
+                    session.commit()
                     return( True )
                     
         return( False )       
@@ -275,45 +239,12 @@ class clsUser():
                 query = self.find_email(newEmail)
                 
                 if (query != []) :	
-                    db.session.query(User).filter(User.username==username).\
-                    update({'email':(newEmail)})
-                    db.session.commit()
+                    session.query(model.User).filter(model.User.username==username).\
+                        update({'email':(newEmail)})
+                    session.commit()
                     return( True )
 
         return( False )     
         
 
     #--------------------------------------------------------------------    
-    
-    def modify_idRole(self, username, newIdRole):
-        """
-			@brief Funcion que modifica el id del role de un usuario dado 
-                   por "newIdRole".
-			
-			@param username	  : username del usuario a modificar.
-			@param newIdRole  : nuevo id del rol para el usuario.
-			
-			@return True si se modifico el rol dado. De lo contrario False.
-		"""
- 		# Booleanos que indican si el tipo es el correcto.
-        usernameIsStr = type(username) == str
-        newIdRoleIsInt = type(newFullname) == int        
-        
-        if ( usernameIsStr and  newFullnameIsStr ):
-            # Booleanos que indican si cumplen con los limites.
-            usernameLenValid = 1 <= len(username) <= 16
-            newIdRoleIsPositive = newIdRole > 0
-            
-            if ( usernameLenValid and newIdRoleIsPositive ):
-                query1 = self.find_username(username)
-                query2 = self.find_idRole(newIdRole)
-                
-                if (query1 != [] and query2 != []) :	
-                    db.session.query(User).filter(User.username==username).\
-                    update({'idrole':(newIdRole)})
-                    db.session.commit()
-                    return( True )
-        
-        return( False )                    
-
-    #--------------------------------------------------------------------

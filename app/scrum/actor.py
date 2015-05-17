@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD
-#from base import *
-=======
+
 
 # Librerias a importar.
->>>>>>> refs/remotes/origin/ramaOriana4
+
 from flask import request, session, Blueprint, json
 from app.scrum.funcActor import clsActor
 import model
@@ -118,16 +116,6 @@ def VCrearActor():
         res['actor']=session['actor']
     return json.dumps(res)
 
-<<<<<<< HEAD
 
-
-
-
-#Use case code starts here
-
-
-
-#Use case code ends here
-=======
 #.----------------------------------------------------------------------------------------.
->>>>>>> refs/remotes/origin/ramaOriana4
+

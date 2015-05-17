@@ -154,8 +154,4 @@ if __name__ == '__main__':
 	# Se crean las tablas de la base de datos.
 	createDatabase()
 	manager.run()
-<<<<<<< HEAD
-=======
 
-#-------------------------------------------------------------------------------
->>>>>>> refs/remotes/origin/ramaOriana4

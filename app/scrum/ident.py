@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask              import request, session, Blueprint, json
-from app.scrum.user     import *
+from app.scrum.user     import clsUser
 
 ident = Blueprint('ident', __name__)
 
@@ -28,7 +28,7 @@ def AIdentificar():
             checkPassword = checkUsername[0].password            
             if (checkPassword == passwordReq):
                 #userActor = checkUsername.idActor
-                userActor = 3
+                userActor = 1
 
                 # Puesto que los id de los actores comienzan desde el 1 entonces se resta una posicion.
                 # para obtener el correspondiente.

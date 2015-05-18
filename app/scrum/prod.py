@@ -59,12 +59,17 @@ def VProducto():
     objetivos = model.Objetivo.query.all()
     idPila = int(request.args.get('idPila', 1))
 
+    productosListados = model.Pila.query.all()
+    if ( len(productosListados) == 0 ):
+        nuevoProducto = model.Pila(1, 'Pago en línea')
+        model.db.session.add(nuevoProducto)
+        model.db.session.commit()
+
     productosListados = model.EstadoActual.query.all()
     if ( len(productosListados) == 0):
         producto1 = model.EstadoActual(1)
         model.db.session.add(producto1)
         model.db.session.commit()
-
 
     actoresListados = model.Actores.query.all()
     if ( len(actoresListados) == 0 ):
@@ -73,6 +78,7 @@ def VProducto():
         nuevoActor.insert_Actor('Scrum Master','Es el Maestro Scrum del producto')
         nuevoActor.insert_Actor('Developer','Es el desarrollador del producto')
     
+
     pilas = [{'idPila':1, 'nombre':'Pagos en línea', 'descripcion':'Pagos usando tarjeta de débito'}]
     res['fPila'] = pilas[idPila-1]
     res['data3'] = [

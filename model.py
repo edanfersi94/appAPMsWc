@@ -49,14 +49,27 @@ manager.add_command('db', MigrateCommand)
 
 #-------------------------------------------------------------------------------
 
-num_acciones  = 0
-num_objetivos = 0
-num_actores   = 0
-
-#-------------------------------------------------------------------------------
-
 # Tablas de la base de datos a definir.
+class Pila(db.Model):
+    __tablename__   = 'pila'
+    idPila          = db.Column(db.Integer, primary_key = True)
+    nomProducto     = db.Column(db.String(30), unique = True)
+    idActor         = db.Column(db.Integer, nullable = True)
+    nomActor        = db.Column(db.String(500), nullable = True)
+    idObjetivo      = db.Column(db.Integer, nullable = True)
+    descripObjetivo = db.Column(db.String(500), nullable = True)
+    idAccion        = db.Column(db.Integer, nullable = True)
+    descripAccion   = db.Column(db.String(500), nullable = True)
 
+    def __init__(self, idPila, nomProducto, idActor = None, nomActor = None, idObjetivo = None, descripObjetivo = None, idAccion = None, descripAccion = None):
+        self.idPila = idPila
+        self.nomProducto = nomProducto
+        self.idActor = idActor
+        self.nomActor = nomActor
+        self.idObjetivo = idObjetivo
+        self.descripObjetivo = descripObjetivo
+        self.idAccion = idAccion
+        self.descripAccion = descripAccion
 
 # Tabla Usuario.
 class User(db.Model):

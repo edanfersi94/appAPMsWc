@@ -1,8 +1,27 @@
 # -*- coding: utf-8 -*-
-from flask import request, session, Blueprint, json
+
+"""
+    UNIVERSIDAD SIMON BOLIVAR
+    Departamento de Computacion y Tecnologia de la Informacion.
+    CI-3715 - Ingenieria de Software I (CI-3715)
+    Abril - Julio 2015
+    AUTORES:
+        Equipo SoftDev
+        
+        
+    DESCRIPCION: Script que contiene los casos de prueba del modulo 
+                 "objetivo.py"
+    
+"""
+#----------------------------------------------------------
+# Librerias a importar 
+
+from flask              import request, session, Blueprint, json
+from app.scrum.user     import clsUser
 
 ident = Blueprint('ident', __name__)
 
+#.------------------------------------------------------------------------------------------------.
 
 @ident.route('/ident/AIdentificar', methods=['POST'])
 def AIdentificar():
@@ -12,6 +31,31 @@ def AIdentificar():
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
 
+    if request.method == 'POST':
+
+        userInput   = clsUser()
+        usuarioReq  = params['usuario']
+        passwordReq = params['clave']
+        lastResult  = len(results) - 1
+
+        checkUsername = userInput.find_username(usuarioReq)
+        
+        if (checkUsername != []):
+            print(str(checkUsername))
+            checkPassword = checkUsername[0].password            
+            if (checkPassword == passwordReq):
+                #userActor = checkUsername.idActor
+                userActor = 1
+
+                # Puesto que los id de los actores comienzan desde el 1 entonces se resta una posicion.
+                # para obtener el correspondiente.
+                res = results[userActor - 1]
+
+            else:
+                res = results[lastResult]
+
+        else:
+            res = results[lastResult]
 
     #Action code ends here
     if "actor" in res:
@@ -22,6 +66,7 @@ def AIdentificar():
     return json.dumps(res)
 
 
+#.------------------------------------------------------------------------------------------------.
 
 @ident.route('/ident/ARegistrar', methods=['POST'])
 def ARegistrar():
@@ -31,6 +76,32 @@ def ARegistrar():
     res = results[0]
     #Action code goes here, res should be a list with a label and a message
 
+    userInput = clsUser()
+    nombreReq   = params['nombre']
+    usuarioReq  = params['usuario']
+    claveReq    = params['clave']
+    clave2Req   = params['clave2']
+    correoReq   = params['correo']
+
+    checkUsername = userInput.find_username(usuarioReq)
+    checkCorreo   = userInput.find_email(usuarioReq)
+
+
+    # Falta acomodar el password
+    if (checkUsername == [] and checkCorreo == [] and claveReq == clave2Req):
+        print(len(usuarioReq))
+        # El actor es 1 porque sera un desarrollador.
+        # actorUsuario = 1
+        resultInsert = userInput.insert_user(nombreReq,usuarioReq,claveReq,correoReq)
+        print(resultInsert)
+        if (resultInsert):
+            res = results[0]
+        else:
+            res = results[1]
+
+    else:
+        res = results[1]
+
 
     #Action code ends here
     if "actor" in res:
@@ -40,6 +111,8 @@ def ARegistrar():
             session['actor'] = res['actor']
     return json.dumps(res)
 
+
+#.------------------------------------------------------------------------------------------------.
 
 
 @ident.route('/ident/VLogin')
@@ -54,6 +127,8 @@ def VLogin():
     return json.dumps(res)
 
 
+#.------------------------------------------------------------------------------------------------.
+
 
 @ident.route('/ident/VRegistro')
 def VRegistro():
@@ -61,7 +136,7 @@ def VRegistro():
     if "actor" in session:
         res['actor']=session['actor']
     #Action code goes here, res should be a JSON structure
-
+    
 
     #Action code ends here
     return json.dumps(res)
@@ -74,3 +149,5 @@ def VRegistro():
 
 
 #Use case code ends here
+
+#.------------------------------------------------------------------------------------------------.
